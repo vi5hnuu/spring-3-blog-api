@@ -1,5 +1,6 @@
 package com.vi5hnu.blogapi.exception.handler;
 
+import com.vi5hnu.blogapi.exception.ApiException;
 import com.vi5hnu.blogapi.exception.ErrorDetail;
 import com.vi5hnu.blogapi.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,11 +31,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetail> handleEntityNotFoundException(ResourceNotFoundException ex,WebRequest webRequest) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDetail(new Date(),ex.getMessage(), webRequest.getDescription(false)));
     }
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorDetail> handleApiException(ApiException ex,WebRequest webRequest) {
+        return ResponseEntity.status(ex.statusCode()).body(new ErrorDetail(new Date(),ex.getMessage(), webRequest.getDescription(false)));
+    }
 
     //global Exception Handlers
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetail> handleGlobalException(Exception exception, WebRequest webRequest){
         return new ResponseEntity<>(new ErrorDetail(new Date(),exception.getMessage(),webRequest.getDescription(false)),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDetail> handleInvalidCredentialException(BadCredentialsException exception, WebRequest webRequest){
+        return new ResponseEntity<>(new ErrorDetail(new Date(),exception.getMessage(),webRequest.getDescription(false)),HttpStatus.UNAUTHORIZED);
     }
 
     @Override
