@@ -1,5 +1,7 @@
 package com.vi5hnu.blogapi.config;
 
+import com.vi5hnu.blogapi.security.JwtAuthenticationEntryPoint;
+import com.vi5hnu.blogapi.security.JwtAuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +16,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.security.SecureRandom;
 
@@ -27,21 +31,29 @@ import java.security.SecureRandom;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     final private UserDetailsService userDetailsService;
-
+    final private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    final private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService){
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                          JwtAuthenticationFilter jwtAuthenticationFilter){
         this.userDetailsService=userDetailsService;
+        this.jwtAuthenticationEntryPoint=jwtAuthenticationEntryPoint;
+        this.jwtAuthenticationFilter=jwtAuthenticationFilter;
     }
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 //        httpSecurity.csrf().disable();
-        return httpSecurity
+        httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize)->authorize
-                        .requestMatchers(HttpMethod.GET,"api/v1/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"api/v1/auth/**").permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults()).build();
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exception)->exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return httpSecurity.build();
     }
 
     @Bean

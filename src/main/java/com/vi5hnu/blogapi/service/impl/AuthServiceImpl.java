@@ -8,6 +8,7 @@ import com.vi5hnu.blogapi.model.Role;
 import com.vi5hnu.blogapi.model.User;
 import com.vi5hnu.blogapi.repository.RoleRepository;
 import com.vi5hnu.blogapi.repository.UserRepository;
+import com.vi5hnu.blogapi.security.JwtTokenProvider;
 import com.vi5hnu.blogapi.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,21 +30,24 @@ public class AuthServiceImpl implements AuthService {
     final private UserRepository userRepository;
     final private RoleRepository roleRepository;
     final private PasswordEncoder passwordEncoder;
+    final private JwtTokenProvider jwtTokenProvider;
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder){
+                           PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider){
         this.authenticationManager=authenticationManager;
         this.userRepository=userRepository;
         this.roleRepository=roleRepository;
         this.passwordEncoder=passwordEncoder;
+        this.jwtTokenProvider=jwtTokenProvider;
     }
     @Override
     public String login(LoginDto loginDto){
         final Authentication authentication=this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User logged in successfully";
+        return jwtTokenProvider.generateJwtToken(authentication);
     }
 
     @Override

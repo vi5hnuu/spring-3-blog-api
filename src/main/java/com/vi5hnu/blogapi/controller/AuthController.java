@@ -1,5 +1,6 @@
 package com.vi5hnu.blogapi.controller;
 
+import com.vi5hnu.blogapi.Dto.JwtAuthResponse;
 import com.vi5hnu.blogapi.Dto.LoginDto;
 import com.vi5hnu.blogapi.Dto.RegisterDto;
 import com.vi5hnu.blogapi.service.AuthService;
@@ -18,8 +19,9 @@ public class AuthController {
         this.authService=authService;
     }
     @PostMapping(value = {"login","signin"})
-    public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto){
-        return new ResponseEntity<>(this.authService.login(loginDto), HttpStatus.OK);
+    public ResponseEntity<JwtAuthResponse> login(@Valid @RequestBody LoginDto loginDto){
+        String token=this.authService.login(loginDto);
+        return new ResponseEntity<>(new JwtAuthResponse().setToken(token), HttpStatus.OK);
     }
     @PostMapping(value = {"register","signup"})
     public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto){
