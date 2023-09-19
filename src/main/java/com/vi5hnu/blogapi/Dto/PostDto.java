@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostDto {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "post title cannot be blank...")
     @Size(min = 2,message = "post title must have atleast 2 characters,")
@@ -30,7 +31,7 @@ public class PostDto {
     private String content;
 
     @NotNull(message = "categoryId cannot be empty")
-    private Long categoryId;
+    private UUID categoryId;
 
     private List<CommentDto> comments;
 }

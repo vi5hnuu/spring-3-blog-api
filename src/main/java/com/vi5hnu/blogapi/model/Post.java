@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -20,8 +21,8 @@ import java.util.List;
 @Entity
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(name="title",nullable = false) private String title;
     @Column(name="description",nullable = false) private String description;
     @Column(name="content",nullable = false) private String content;

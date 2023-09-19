@@ -5,6 +5,7 @@ import com.vi5hnu.blogapi.Dto.PostDto;
 import com.vi5hnu.blogapi.service.PostService;
 import com.vi5hnu.blogapi.utils.AppConstants;
 import jakarta.validation.Valid;
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,24 +38,26 @@ public class PostController {
         return new ResponseEntity<>(this.postService.getAllPosts(pageSize,pageNo,sortBy,orderBy),HttpStatus.OK);
     }
     @GetMapping(path = "category/{id}")
-    public ResponseEntity<List<PostDto>> getAllPostInCategory(@PathVariable(name = "id") Long id){
+    public ResponseEntity<List<PostDto>> getAllPostInCategory(@UUID(allowNil = false,message = "invalid category id") @PathVariable(name = "id") java.util.UUID id){
         return new ResponseEntity<>(this.postService.getAllPostByCategoryId(id),HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<PostDto> getPost(@PathVariable(name = "id") Long id){
+    public ResponseEntity<PostDto> getPost(@UUID(allowNil = false,message = "invalid post id") @PathVariable(name = "id") java.util.UUID id){
         return new ResponseEntity<>(this.postService.getPostById(id),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(path = "{id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable(name = "id") Long id,@Valid @RequestBody(required = true) PostDto postDto){
+    public ResponseEntity<PostDto> updatePost(
+            @UUID(allowNil = false,message = "invalid post id") @PathVariable(name = "id") java.util.UUID id,
+            @Valid @RequestBody(required = true) PostDto postDto){
         return new ResponseEntity<>(this.postService.updatePostById(id,postDto),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<String> deletePost(@PathVariable(name = "id") Long id){
+    public ResponseEntity<String> deletePost(@UUID(allowNil = false,message = "invalid post id") @PathVariable(name = "id") java.util.UUID id){
         this.postService.deletePostById(id);
         return new ResponseEntity<>("Post deleted.",HttpStatus.OK);
     }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +15,8 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(name = "name",nullable = false) private String name;
     @Column(name = "username",nullable = false,unique = true) private String username;
     @Column(name = "email",nullable = false,unique = true) private String email;

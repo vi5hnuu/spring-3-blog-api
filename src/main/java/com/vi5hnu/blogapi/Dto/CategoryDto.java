@@ -7,12 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDto {
-    private Long id;
+    private UUID id;
     @NotBlank(message = "category name is required")
     private String name;
 

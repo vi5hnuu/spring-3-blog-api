@@ -7,10 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public class CommentDto {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "user name cannot be empty.")
     private String name;

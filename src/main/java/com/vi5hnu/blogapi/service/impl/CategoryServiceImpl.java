@@ -1,18 +1,17 @@
 package com.vi5hnu.blogapi.service.impl;
 
 import com.vi5hnu.blogapi.Dto.CategoryDto;
-import com.vi5hnu.blogapi.exception.ApiException;
 import com.vi5hnu.blogapi.exception.ResourceNotFoundException;
 import com.vi5hnu.blogapi.model.Category;
 import com.vi5hnu.blogapi.repository.CategoryRepository;
 import com.vi5hnu.blogapi.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -36,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getCategory(Long id) {
+    public CategoryDto getCategory(UUID id) {
         final Category category=this.categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("category does not exists for id %s.",id)));
         return new CategoryDto(category.getId(), category.getName(), category.getDescription());
     }
@@ -47,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto updateCategory(Long id,CategoryDto categoryDto) {
+    public CategoryDto updateCategory(UUID id, CategoryDto categoryDto) {
         final Category exCategroy=this.categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("category does not exists for id %s.",id)));
         exCategroy.setName(categoryDto.getName());
         exCategroy.setDescription(categoryDto.getDescription());
@@ -57,8 +56,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long id) {
-        if(!this.categoryRepository.existsById(id)){
+    public void deleteCategory(UUID id) {
+        if(this.categoryRepository.existsById(id)){
             throw new ResourceNotFoundException(String.format("category does not exists for id %s", id));
         }
         this.categoryRepository.deleteById(id);

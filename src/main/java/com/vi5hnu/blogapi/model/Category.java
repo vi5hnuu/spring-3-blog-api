@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +15,8 @@ import java.util.List;
 @Table(name = "categories")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @Column(nullable = false,unique = true) private String name;
     @Column(nullable = false) private String description;
 

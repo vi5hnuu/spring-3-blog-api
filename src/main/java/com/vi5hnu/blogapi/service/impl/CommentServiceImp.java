@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CommentServiceImp implements CommentService {
@@ -23,8 +24,8 @@ public class CommentServiceImp implements CommentService {
         this.postRepository=postRepository;
     }
     @Override
-    public CommentDto createComment(Long id,CommentDto commentDto) {
-        final Post exPost=this.postRepository.getReferenceById(id);
+    public CommentDto createComment(UUID id, CommentDto commentDto) {
+        final Post exPost=this.postRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("post with id %s does not exists.",id)));
         final Comment comment=new Comment(null,commentDto.getName(), commentDto.getEmail(),commentDto.getBody(),exPost);
         final Comment savedComment=this.commentRepository.save(comment);
         commentDto.setId(comment.getId());
@@ -32,14 +33,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDto> getAllComments(Long id) {
+    public List<CommentDto> getAllComments(UUID id) {
         //return this.commentRepository.findAllById(List.of(id)).stream().map(CommentServiceImp::mapToDto).toList();
         final Post post=this.postRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(String.format("comments not found for post id %s",id)));
         return post.getComments().stream().map(CommentServiceImp::mapToDto).toList();
     }
 
     @Override
-    public CommentDto getComment(Long pid, Long cid) {
+    public CommentDto getComment(UUID pid, UUID cid) {
         ////////getComments will return comment object list then we find our own comment on it..
         //final Post post=this.postRepository.findById(pid).orElseThrow(()->new ResourceNotFoundException(String.format("No Post exists for post id %s",pid)));
         //final Comment postComment= post.getComments().stream().filter((comment)->comment.getId().equals(cid)).findFirst().orElseThrow(()->new ResourceNotFoundException(String.format("No Comment with id %s exist for Post with id %s",cid,pid)));
@@ -54,19 +55,19 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public CommentDto getComment(Long cid) {
+    public CommentDto getComment(UUID cid) {
         final Comment comment=this.commentRepository.findById(cid).orElseThrow(()->new ResourceNotFoundException(String.format("No Comment exists for comment id %s",cid)));
         return mapToDto(comment);
     }
 
     @Override
-    public CommentDto updateComment(Long cid, CommentDto commentDto) {
+    public CommentDto updateComment(UUID cid, CommentDto commentDto) {
         final Comment comment=this.commentRepository.findById(cid).orElseThrow(()->new ResourceNotFoundException(String.format("No Comment exists for comment id %s",cid)));
         comment.setBody(commentDto.getBody());
         return mapToDto(comment);
     }
     @Override
-    public CommentDto updateComment(Long pid,Long cid, CommentDto commentDto) {
+    public CommentDto updateComment(UUID pid, UUID cid, CommentDto commentDto) {
         final Post post=this.postRepository.findById(pid).orElseThrow(()->new ResourceNotFoundException(String.format("No Post exists for post id %s",pid)));
         final Comment comment=this.commentRepository.findById(cid).orElseThrow(()->new ResourceNotFoundException(String.format("No Comment exists for comment id %s",cid)));
         if(!post.getId().equals(comment.getPost().getId())){
@@ -77,7 +78,7 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public boolean deleteComment(Long pid, Long cid) {
+    public boolean deleteComment(UUID pid, UUID cid) {
         final Post post=this.postRepository.findById(pid).orElseThrow(()->new ResourceNotFoundException(String.format("No Post exists for post id %s",pid)));
         boolean deleted=post.getComments().removeIf((comment->comment.getId().equals(cid)));
         if(deleted) this.postRepository.save(post);

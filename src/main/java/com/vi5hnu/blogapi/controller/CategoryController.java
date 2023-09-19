@@ -3,6 +3,7 @@ package com.vi5hnu.blogapi.controller;
 import com.vi5hnu.blogapi.Dto.CategoryDto;
 import com.vi5hnu.blogapi.service.CategoryService;
 import jakarta.validation.Valid;
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class CategoryController {
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id){
+    public ResponseEntity<CategoryDto> getCategory(@UUID(allowNil = false,message = "invalid category id") @PathVariable java.util.UUID id){
         return new ResponseEntity<>(this.categoryService.getCategory(id), HttpStatus.OK);
     }
     @GetMapping(path = "")
@@ -35,13 +36,13 @@ public class CategoryController {
     }
     @PutMapping(path = "{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryDto categoryDto){
+    public ResponseEntity<CategoryDto> updateCategory(@UUID(allowNil = false,message = "invalid category id") @PathVariable java.util.UUID id, @Valid @RequestBody CategoryDto categoryDto){
         return new ResponseEntity<>(this.categoryService.updateCategory(id,categoryDto), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
+    public ResponseEntity<String> deleteCategory(@UUID(allowNil = false,message = "invalid category id") @PathVariable java.util.UUID id){
         this.categoryService.deleteCategory(id);
         return new ResponseEntity<>("category deleted successfully.", HttpStatus.OK);
     }

@@ -3,15 +3,16 @@ package com.vi5hnu.blogapi.service;
 import com.vi5hnu.blogapi.Dto.CommentDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CommentService {
-    CommentDto createComment(Long id,CommentDto commentDto);
-    List<CommentDto> getAllComments(Long id);
-    CommentDto getComment(Long pid,Long cid);
-    CommentDto getComment(Long cid);
+    CommentDto createComment(UUID id, CommentDto commentDto);
+    List<CommentDto> getAllComments(UUID id);
+    CommentDto getComment(UUID pid, UUID cid);
+    CommentDto getComment(UUID cid);
 
-    CommentDto updateComment(Long pid,Long cid,CommentDto commentDto);
-    CommentDto updateComment(Long cid,CommentDto commentDto);
+    CommentDto updateComment(UUID pid, UUID cid, CommentDto commentDto);
+    CommentDto updateComment(UUID cid, CommentDto commentDto);
 
-    boolean deleteComment(Long pid,Long cid);
+    boolean deleteComment(UUID pid, UUID cid);
 }
