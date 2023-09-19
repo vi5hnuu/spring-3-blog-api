@@ -28,4 +28,8 @@ public class Post {
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)//owning side
     private List<Comment> comments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id",referencedColumnName = "id")
+    private Category category;
 }

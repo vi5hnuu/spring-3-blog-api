@@ -1,5 +1,6 @@
 package com.vi5hnu.blogapi.config;
 
+import com.vi5hnu.blogapi.model.Category;
 import com.vi5hnu.blogapi.security.JwtAuthenticationEntryPoint;
 import com.vi5hnu.blogapi.security.JwtAuthenticationFilter;
 import jakarta.servlet.FilterChain;

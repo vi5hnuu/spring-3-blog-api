@@ -25,6 +25,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         Map<String, String> errorResponse = new HashMap<>();
+        System.out.println("got an exception : "+authException.toString());
         errorResponse.put("message", authException.getMessage());
         errorResponse.put("date", new Date().toString());
         errorResponse.put("uri",request.getRequestURI());

@@ -2,10 +2,12 @@ package com.vi5hnu.blogapi.Dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -26,5 +28,9 @@ public class PostDto {
     @NotBlank(message = "post description cannot be blank")
     @Size(min = 20,message = "content must be atleast 20 characters long")
     private String content;
+
+    @NotNull(message = "categoryId cannot be empty")
+    private Long categoryId;
+
     private List<CommentDto> comments;
 }

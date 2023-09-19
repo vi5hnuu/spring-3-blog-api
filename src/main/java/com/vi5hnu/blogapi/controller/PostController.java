@@ -36,6 +36,11 @@ public class PostController {
             @RequestParam(name = "orderBy",defaultValue = AppConstants.ORDER_BY,required = false) String orderBy){
         return new ResponseEntity<>(this.postService.getAllPosts(pageSize,pageNo,sortBy,orderBy),HttpStatus.OK);
     }
+    @GetMapping(path = "category/{id}")
+    public ResponseEntity<List<PostDto>> getAllPostInCategory(@PathVariable(name = "id") Long id){
+        return new ResponseEntity<>(this.postService.getAllPostByCategoryId(id),HttpStatus.OK);
+    }
+
     @GetMapping(path = "{id}")
     public ResponseEntity<PostDto> getPost(@PathVariable(name = "id") Long id){
         return new ResponseEntity<>(this.postService.getPostById(id),HttpStatus.OK);

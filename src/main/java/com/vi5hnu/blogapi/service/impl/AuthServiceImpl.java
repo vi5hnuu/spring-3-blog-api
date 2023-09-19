@@ -58,6 +58,8 @@ public class AuthServiceImpl implements AuthService {
         }
         final User user=new User(null,registerDto.getName(),registerDto.getUsername(),registerDto.getEmail(), passwordEncoder.encode(registerDto.getPassword()), List.of(defaultRole));
         this.userRepository.save(user);
-        return "user registered successfully.";
+        final Authentication authentication=this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registerDto.getUsername(), registerDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtTokenProvider.generateJwtToken(authentication);
     }
 }

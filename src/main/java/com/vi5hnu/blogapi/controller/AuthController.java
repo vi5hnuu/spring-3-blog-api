@@ -24,7 +24,7 @@ public class AuthController {
         return new ResponseEntity<>(new JwtAuthResponse().setToken(token), HttpStatus.OK);
     }
     @PostMapping(value = {"register","signup"})
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto){
-        return new ResponseEntity<>(this.authService.register(registerDto), HttpStatus.CREATED);
+    public ResponseEntity<JwtAuthResponse> register(@Valid @RequestBody RegisterDto registerDto){
+        return new ResponseEntity<>(new JwtAuthResponse().setToken(this.authService.register(registerDto)), HttpStatus.CREATED);
     }
 }
